@@ -1,5 +1,5 @@
 from twilio.rest import Client
-from fastapi import FastAPI,Form
+from fastapi import FastAPI, Form
 from anthropic import Anthropic
 import os
 from dotenv import load_dotenv
@@ -22,24 +22,37 @@ app = FastAPI()
 
 @app.post("/webhook")
 async def auto_repl(From: str = Form(...), Body: str = Form(...)):
-    prompt = f"Reply to this message: {Body} in a helpful and friendly way"
-    response = ai_client.messages.create(
-        model="claude-3-5-sonnet-20240620",
-        messages=[
-            {"role": "user", "content": prompt}
-        ]
-    )
+    try:
+        prompt = f"Reply to this message: {Body} in a helpful and friendly way"
+        
+        # Fixed: Added max_tokens parameter
+        response = ai_client.messages.create(
+            model="claude-3-5-sonnet-20241022",  # Updated to latest model
+            max_tokens=1000,  # This was missing!
+            messages=[
+                {"role": "user", "content": prompt}
+            ]
+        )
 
-    reply = response.content[0].text
+        reply = response.content[0].text
 
-    logger.info(f"Replied to {From}: {reply}")
+        logger.info(f"Replied to {From}: {reply}")
 
-    message = client.messages.create(
-        from_=twilio_phone_number,
-        to='whatsapp:+233504562522',
-        body=reply
-    )
+        # Send WhatsApp message
+        message = client.messages.create(
+            from_=twilio_phone_number,
+            to=From,  # Reply to sender instead of hardcoded number
+            body=reply
+        )
 
-    print(f"✅ Replied to {From}: {reply}")
-    # return {"status": "sent", "sid": message.sid}
-    return message
+        print(f"✅ Replied to {From}: {reply}")
+        return {"status": "sent", "sid": message.sid}
+        
+    except Exception as e:
+        logger.error(f"Error processing message: {str(e)}")
+        return {"status": "error", "message": str(e)}
+
+# Optional: Add a health check endpoint
+@app.get("/")
+async def health_check():
+    return {"status": "WhatsApp bot is running!"}
