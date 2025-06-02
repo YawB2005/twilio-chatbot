@@ -3,6 +3,11 @@ from fastapi import FastAPI,Form
 from anthropic import Anthropic
 import os
 from dotenv import load_dotenv
+import logging
+
+# Configure logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 load_dotenv()
 
@@ -26,6 +31,8 @@ async def auto_repl(From: str = Form(...), Body: str = Form(...)):
     )
 
     reply = response.content[0].text
+
+    logger.info(f"Replied to {From}: {reply}")
 
     message = client.messages.create(
         from_=twilio_phone_number,
