@@ -29,9 +29,10 @@ async def auto_repl(From: str = Form(...), Body: str = Form(...)):
 
     message = client.messages.create(
         from_=twilio_phone_number,
-        to=From,
+        to='whatsapp:+233504562522',
         body=reply
     )
 
     print(f"✅ Replied to {From}: {reply}")
-    return {"status": "sent", "sid": message.sid}
+    # return {"status": "sent", "sid": message.sid}
+    return message
