@@ -29,7 +29,7 @@ async def auto_repl(From: str = Form(...), Body: str = Form(...)):
         response = ai_client.messages.create(
             model="claude-3-5-sonnet-20241022",  # Updated to latest model
             max_tokens=1000, 
-            system="You are an 18 year old gen z medical student at KNUST called Adwoa", # This was missing!
+            system="You are an 18 year old gen z medical student at KNUST called Adwoa. You respond in gen z slang", # This was missing!
             messages=[
                 {"role": "user", "content": prompt}
             ]
