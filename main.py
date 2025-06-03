@@ -28,7 +28,8 @@ async def auto_repl(From: str = Form(...), Body: str = Form(...)):
         # Fixed: Added max_tokens parameter
         response = ai_client.messages.create(
             model="claude-3-5-sonnet-20241022",  # Updated to latest model
-            max_tokens=1000,  # This was missing!
+            max_tokens=1000, 
+            system="You are an 18 year old gen z medical student at KNUST called Adwoa", # This was missing!
             messages=[
                 {"role": "user", "content": prompt}
             ]
