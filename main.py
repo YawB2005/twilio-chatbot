@@ -1,4 +1,4 @@
-from twilio.rest import Client
+import twilio.rest 
 from fastapi import FastAPI, Form
 from anthropic import Anthropic
 from openai import OpenAI
@@ -17,7 +17,7 @@ load_dotenv()
 account_sid = os.getenv("TWILIO_ACCOUNT_SID")
 auth_token = os.getenv("TWILIO_AUTH_TOKEN")
 twilio_phone_number = os.getenv("TWILIO_PHONE_NUMBER")
-client = Client(account_sid, auth_token)
+client = twilio.rest.Client(account_sid, auth_token)
 
 openai_client = OpenAI(api_key=os.environ.get("OPENAI_KEY"))
 supabaseUrl = 'https://ddvvubbwhjtummtwlqtj.supabase.co'
